@@ -351,7 +351,7 @@ typedef UNITY_FLOAT_TYPE UNITY_FLOAT;
 #endif
 
 #ifndef UNITY_PRINT_EOL
-#define UNITY_PRINT_EOL()   UNITY_OUTPUT_CHAR('\n')
+#define UNITY_PRINT_EOL()   do { UNITY_OUTPUT_CHAR('\n');UNITY_OUTPUT_CHAR('\r'); } while(0)
 #endif
 
 #ifndef UNITY_OUTPUT_START
@@ -533,6 +533,8 @@ struct UNITY_STORAGE_T
 #ifndef UNITY_EXCLUDE_SETJMP_H
     jmp_buf AbortFrame;
 #endif
+    void (*setUp)(void);
+    void (*tearDown)(void);
 };
 
 extern struct UNITY_STORAGE_T Unity;
@@ -544,6 +546,7 @@ extern struct UNITY_STORAGE_T Unity;
 void UnityBegin(const char* filename);
 int  UnityEnd(void);
 void UnitySetTestFile(const char* filename);
+void UnitySetCallbacks(void (*setUp)(void), void (*tearDown)(void));
 void UnityConcludeTest(void);
 
 #ifndef RUN_TEST
@@ -852,6 +855,10 @@ extern const char UnityStrErrShorthand[];
 
 #ifndef UNITY_BEGIN
 #define UNITY_BEGIN() UnityBegin(__FILE__)
+#endif
+
+#ifndef UNITY_SET_CALLBACKS
+#define UNITY_SET_CALLBACKS(setup, teardown) UnitySetCallbacks(setup, teardown);
 #endif
 
 #ifndef UNITY_END
@@ -1177,6 +1184,10 @@ int UnityTestMatches(void);
 #define UNITY_TEST_ASSERT_DOUBLE_IS_NOT_NEG_INF(actual, line, message)                           UnityAssertDoubleSpecial((UNITY_DOUBLE)(actual), (message), (UNITY_LINE_TYPE)(line), UNITY_FLOAT_IS_NOT_NEG_INF)
 #define UNITY_TEST_ASSERT_DOUBLE_IS_NOT_NAN(actual, line, message)                               UnityAssertDoubleSpecial((UNITY_DOUBLE)(actual), (message), (UNITY_LINE_TYPE)(line), UNITY_FLOAT_IS_NOT_NAN)
 #define UNITY_TEST_ASSERT_DOUBLE_IS_NOT_DETERMINATE(actual, line, message)                       UnityAssertDoubleSpecial((UNITY_DOUBLE)(actual), (message), (UNITY_LINE_TYPE)(line), UNITY_FLOAT_IS_NOT_DET)
+#endif
+
+#ifndef UNITY_OUTPUT_COLOR
+  #define UNITY_OUTPUT_COLOR 1
 #endif
 
 /* End of UNITY_INTERNALS_H */

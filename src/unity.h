@@ -29,8 +29,11 @@ extern "C"
  * If using unity directly, these will need to be provided for each test
  * executable built. If you are using the test runner generator and/or
  * Ceedling, these are optional. */
-void setUp(void);
-void tearDown(void);
+/*
+ * For this custom version this function must set at the beginning for each test.
+ * void setUp(void);
+ * void tearDown(void);
+*/
 
 /* These functions are intended to be called at the beginning and end of an
  * entire test suite.  suiteTearDown() is passed the number of tests that

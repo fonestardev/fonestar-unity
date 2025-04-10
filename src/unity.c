@@ -2199,12 +2199,14 @@ void UnityDefaultTestRun(UnityTestFunction Func, const char* FuncName, const int
     UNITY_EXEC_TIME_START();
     if (TEST_PROTECT())
     {
-        setUp();
+    	if (Unity.setUp != NULL)
+    	 Unity.setUp();
         Func();
     }
     if (TEST_PROTECT())
     {
-        tearDown();
+    	if (Unity.tearDown != NULL)
+    		Unity.tearDown();
     }
     UNITY_EXEC_TIME_STOP();
     UnityConcludeTest();
@@ -2217,6 +2219,11 @@ void UnitySetTestFile(const char* filename)
     Unity.TestFile = filename;
 }
 
+void UnitySetCallbacks(void (*setUp)(void), void (*tearDown)(void))
+{
+	Unity.setUp = setUp;
+	Unity.tearDown = tearDown;
+}
 /*-----------------------------------------------*/
 void UnityBegin(const char* filename)
 {
